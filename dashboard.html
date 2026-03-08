@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports Center Pro</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #f3f4f6;
+            --bg-sidebar: #ffffff;
+            --bg-card: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --accent: #2563eb; /* Royal Blue */
+            --accent-light: #eff6ff;
+            --success: #10b981; /* Emerald Green */
+            --border: #e5e7eb;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --radius: 16px;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            flex-shrink: 0;
+        }
+
+        .brand {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .brand i { font-size: 1.4rem; }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 4px;
+        }
+        .nav-item:hover {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+        }
+        .nav-item.active {
+            background-color: var(--accent-light);
+            color: var(--accent);
+            font-weight: 600;
+        }
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            filter: grayscale(100%);
+            opacity: 0.7;
+            transition: all 0.2s;
+        }
+        .nav-item:hover .nav-icon, .nav-item.active .nav-icon {
+            filter: grayscale(0%);
+            opacity: 1;
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            overflow-y: auto;
+            padding: 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .league-logo-large {
+            height: 48px;
+            width: auto;
+        }
+
+        .search-container {
+            position: relative;
+            width: 300px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 40px;
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            background: white;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .search-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-light);
+        }
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        /* Grid Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2.5fr 1fr;
+            gap: 24px;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        /* Headlines */
+        .headline-card {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            padding: 16px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .headline-card:hover { transform: translateX(4px); }
+        .headline-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            background: #eee;
+            object-fit: cover;
+        }
+        .headline-content h3 {
+            font-size: 1.1rem;
+            margin: 0 0 8px 0;
+            line-height: 1.4;
+        }
+        .headline-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Scores Grid */
+        .scores-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        
+        .score-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .match-status {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .match-status.live { color: #ef4444; }
+
+        .team-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .team-flex {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .team-logo-small {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+        .score-val {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .score-val.winner { color: var(--accent); }
+
+        /* Standings Table */
+        .table-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        th {
+            text-align: left;
+            padding: 12px 8px;
+            color: var(--text-muted);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+        td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        tr:last-child td { border-bottom: none; }
+        .rank-cell { font-weight: 600; color: var(--text-muted); width: 20px; }
+        .team-cell { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+        .points-cell { font-weight: 700; color: var(--text-main); }
+        .stat-cell { color: var(--text-muted); text-align: center; }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="brand">
+            <i class="fas fa-cube"></i> SportsCenter
+        </div>
+        <div id="league-nav">
+            <!-- Nav Items Injected Here -->
+        </div>
+    </nav>
+
+    <main class="main">
+        <header class="header">
+            <div class="page-title" id="page-header">
+                <!-- League Logo & Title -->
+            </div>
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search teams, players..." onkeypress="handleSearch(event)">
+            </div>
+        </header>
+
+        <div class="dashboard-grid">
+            
+            <!-- Left Column: Headlines & Scores -->
+            <div class="content-col">
+                
+                <!-- Headlines Section -->
+                <div class="card" id="headlines-section">
+                    <div class="section-title"><i class="far fa-newspaper"></i> Top Headlines</div>
+                    <div id="headlines-container">
+                        <div class="loading">Fetching latest news...</div>
+                    </div>
+                </div>
+
+                <!-- Scores Section -->
+                <div class="section-title"><i class="fas fa-stopwatch"></i> Live & Recent Scores</div>
+                <div class="scores-grid" id="scores-container">
+                    <div class="loading">Loading scores...</div>
+                </div>
+            </div>
+
+            <!-- Right Column: Standings -->
+            <div class="sidebar-col">
+                <div class="card">
+                    <div class="section-title"><i class="fas fa-list-ol"></i> Standings</div>
+                    <div class="table-container">
+                        <table id="standings-table">
+                            <!-- Table Rows -->
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+<script>
+    const API_KEY = '123'; // Free tier
+    const BASE_URL = `https://www.thesportsdb.com/api/v1/json/${API_KEY}`;
+
+    // High-Quality Logos (ESPN & Football-Data.org)
+    const LEAGUES = [
+        { name: 'Premier League', id: '4328', logo: 'https://crests.football-data.org/PL.png' },
+        { name: 'NBA', id: '4387', logo: 'https://a.espncdn.com/i/teamlogos/leagues/500/nba.png' },
+        { name: 'NFL', id: '4391', logo: 'https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png' },
+        { name: 'La Liga', id: '4335', logo: 'https://crests.football-data.org/PD.png' },
+        { name: 'Bundesliga', id: '4331', logo: 'https://crests.football-data.org/BL1.png' },
+        { name: 'Serie A', id: '4332', logo: 'https://crests.football-data.org/SA.png' },
+        { name: 'Ligue 1', id: '4334', logo: 'https://crests.football-data.org/FL1.png' },
+        { name: 'MLB', id: '4424', logo: 'https://a.espncdn.com/i/teamlogos/leagues/500/mlb.png' },
+        { name: 'NHL', id: '4380', logo: 'https://a.espncdn.com/i/teamlogos/leagues/500/nhl.png' }
+    ];
+
+    let currentLeague = LEAGUES[0];
+
+    function init() {
+        renderNav();
+        loadLeague(LEAGUES[0]);
+    }
+
+    function renderNav() {
+        const nav = document.getElementById('league-nav');
+        nav.innerHTML = LEAGUES.map(l => `
+            <div class="nav-item ${l.id === currentLeague.id ? 'active' : ''}" onclick='switchLeague(${JSON.stringify(l)})'>
+                <img src="${l.logo}" class="nav-icon">
+                <span>${l.name}</span>
+            </div>
+        `).join('');
+    }
+
+    function switchLeague(league) {
+        currentLeague = league; // Store object, not just ID
+        // Re-render nav to update active class logic (needs fixing in renderNav to check object ID)
+        // Actually, let's just update the DOM classes manually for speed
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+        
+        loadLeague(league);
+    }
+
+    // Caching Wrapper
+    async function fetchWithCache(url, ttlMinutes = 60) {
+        const cacheKey = `sports_cache_${url}`;
+        const cached = localStorage.getItem(cacheKey);
+        const now = Date.now();
+
+        if (cached) {
+            const { timestamp, data } = JSON.parse(cached);
+            const ageMinutes = (now - timestamp) / (1000 * 60);
+            if (ageMinutes < ttlMinutes) {
+                console.log(`[Cache Hit] ${url} (${ageMinutes.toFixed(1)}m old)`);
+                return data;
+            }
+        }
+
+        console.log(`[API Fetch] ${url}`);
+        try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`API Error: ${res.status}`);
+            const data = await res.json();
+            
+            // Only cache if valid data (TheSportsDB returns null fields on error sometimes)
+            if (data) {
+                localStorage.setItem(cacheKey, JSON.stringify({ timestamp: now, data }));
+            }
+            return data;
+        } catch (e) {
+            // Fallback to stale cache if API fails (e.g. Rate Limit)
+            if (cached) {
+                console.warn("API failed, using stale cache.", e);
+                const { data } = JSON.parse(cached);
+                return data;
+            }
+            throw e;
+        }
+    }
+
+    async function loadLeague(league) {
+        // 1. Update Header
+        document.getElementById('page-header').innerHTML = `
+            <img src="${league.logo}" class="league-logo-large">
+            <span>${league.name}</span>
+            <span style="font-size:0.4em; color:#888; margin-left:10px; font-weight:normal;" id="last-updated"></span>
+        `;
+
+        // 2. Fetch Data (Scores + Standings)
+        const scoresEl = document.getElementById('scores-container');
+        const standingsEl = document.getElementById('standings-table');
+        const headlinesEl = document.getElementById('headlines-container');
+
+        scoresEl.innerHTML = '<div class="loading">Loading...</div>';
+        standingsEl.innerHTML = '<tr><td class="loading">Updating table...</td></tr>';
+
+        try {
+            // Use 60 minute cache
+            const [past, next, table] = await Promise.all([
+                fetchWithCache(`${BASE_URL}/eventspastleague.php?id=${league.id}`),
+                fetchWithCache(`${BASE_URL}/eventsnextleague.php?id=${league.id}`),
+                fetchWithCache(`${BASE_URL}/lookuptable.php?l=${league.id}&s=2025-2026`)
+            ]);
+            
+            // Show update time from cache timestamp (approx)
+            document.getElementById('last-updated').innerText = `Data cached (1h TTL)`;
+
+            // --- RENDER SCORES ---
+            const events = [...(next.events || []), ...(past.events || [])].slice(0, 10);
+            
+            if (events.length === 0) {
+                scoresEl.innerHTML = '<div class="loading">No games found. Season break?</div>';
+            } else {
+                scoresEl.innerHTML = events.map(ev => {
+                    const isPast = !!ev.intHomeScore;
+                    return `
+                    <div class="score-card">
+                        <div class="match-status ${!isPast ? 'live' : ''}">
+                            ${isPast ? 'Final' : ev.strTime ? ev.strTime.substring(0,5) : 'Upcoming'} • ${ev.dateEvent}
+                        </div>
+                        <div class="team-row">
+                            <div class="team-flex">
+                                <span style="font-weight:600">${ev.strHomeTeam}</span>
+                            </div>
+                            <span class="score-val ${parseInt(ev.intHomeScore) > parseInt(ev.intAwayScore) ? 'winner' : ''}">
+                                ${ev.intHomeScore || '-'}
+                            </span>
+                        </div>
+                        <div class="team-row">
+                            <div class="team-flex">
+                                <span style="font-weight:600">${ev.strAwayTeam}</span>
+                            </div>
+                            <span class="score-val ${parseInt(ev.intAwayScore) > parseInt(ev.intHomeScore) ? 'winner' : ''}">
+                                ${ev.intAwayScore || '-'}
+                            </span>
+                        </div>
+                    </div>
+                    `;
+                }).join('');
+            }
+
+            // --- RENDER STANDINGS ---
+            if (table.table) {
+                const headers = `<thead><tr>
+                    <th>#</th>
+                    <th>Team</th>
+                    <th style="text-align:center">P</th>
+                    <th style="text-align:center">W</th>
+                    <th style="text-align:center">Pts</th>
+                </tr></thead>`;
+                
+                const rows = table.table.map(t => `
+                    <tr>
+                        <td class="rank-cell">${t.intRank}</td>
+                        <td class="team-cell">
+                            <img src="${t.strTeamBadge || ''}" width="20"> ${t.strTeam}
+                        </td>
+                        <td class="stat-cell">${t.intPlayed}</td>
+                        <td class="stat-cell">${t.intWin}</td>
+                        <td class="points-cell" style="text-align:center">${t.intPoints}</td>
+                    </tr>
+                `).join('');
+                
+                standingsEl.innerHTML = headers + `<tbody>${rows}</tbody>`;
+            } else {
+                standingsEl.innerHTML = '<tr><td style="padding:20px; text-align:center">Standings unavailable for this season.</td></tr>';
+            }
+
+            // --- RENDER HEADLINES (Top 3 Recent Games with Images) ---
+            const highlights = (past.events || []).slice(0, 3); // Show Top 3
+            
+            if (highlights.length > 0) {
+                headlinesEl.innerHTML = highlights.map(h => {
+                    const winner = parseInt(h.intHomeScore) > parseInt(h.intAwayScore) ? h.strHomeTeam : h.strAwayTeam;
+                    const newsQuery = `${h.strHomeTeam} vs ${h.strAwayTeam} highlights`;
+                    // Use Event Thumbnail if available, else Fallback to League/Team Logo
+                    const bgImage = h.strThumb || league.logo; 
+                    
+                    return `
+                        <div class="headline-card" onclick="window.open('https://www.google.com/search?q=${encodeURIComponent(newsQuery)}')">
+                            <div style="background-image: url('${bgImage}'); background-size: cover; background-position: center; width:120px; height:80px; border-radius:12px; flex-shrink:0;"></div>
+                            <div class="headline-content">
+                                <h3>${winner} defeats ${winner === h.strHomeTeam ? h.strAwayTeam : h.strHomeTeam}</h3>
+                                <div class="headline-meta">
+                                    <span style="color:var(--accent); font-weight:600">Game Recap</span> • ${h.intHomeScore}-${h.intAwayScore} • ${h.dateEvent}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                headlinesEl.innerHTML = '<div style="padding:10px; color:#888">No recent headlines found.</div>';
+            }
+
+        } catch (e) {
+            console.error(e);
+            scoresEl.innerHTML = 'Error loading data.';
+        }
+    }
+
+    // Helper to generate a consistent color from string
+    function varToColor(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const c = (hash & 0x00FFFFFF).toString(16).toUpperCase();
+        return '#' + "00000".substring(0, 6 - c.length) + c;
+    }
+
+    function handleSearch(e) {
+        if(e.key === 'Enter') {
+            alert('Search functionality coming in v2 (Backend integration required)');
+        }
+    }
+
+    // Start
+    init();
+
+</script>
+</body>
+</html>
