@@ -22,19 +22,25 @@
 
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-body);
+            background-color: rgba(243, 244, 246, 0.85);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-blend-mode: overlay;
             color: var(--text-main);
             margin: 0;
             padding: 0;
             height: 100vh;
             display: flex;
             overflow: hidden;
+            transition: background-image 0.5s ease-in-out;
         }
 
         /* Sidebar */
         .sidebar {
             width: 260px;
-            background: var(--bg-sidebar);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
@@ -158,15 +164,56 @@
 
         /* Cards */
         .card {
-            background: var(--bg-card);
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
             border-radius: var(--radius);
             box-shadow: var(--shadow);
-            border: 1px solid var(--border);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             padding: 20px;
             margin-bottom: 24px;
         }
 
         /* Headlines */
+        .hero-headline {
+            position: relative;
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 20px;
+            cursor: pointer;
+            min-height: 250px;
+            display: flex;
+            align-items: flex-end;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .hero-headline:hover {
+            transform: scale(1.02);
+        }
+        .hero-headline::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0) 100%);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            padding: 24px;
+            color: white;
+            width: 100%;
+        }
+        .hero-content h3 {
+            font-size: 1.6rem;
+            margin: 0 0 8px 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .hero-meta {
+            font-size: 0.95rem;
+            color: #cbd5e1;
+        }
+
         .headline-card {
             display: flex;
             gap: 20px;
@@ -174,7 +221,9 @@
             padding: 16px;
             cursor: pointer;
             transition: transform 0.2s;
+            border-bottom: 1px solid var(--border);
         }
+        .headline-card:last-child { border-bottom: none; }
         .headline-card:hover { transform: translateX(4px); }
         .headline-image {
             width: 80px;
@@ -238,6 +287,29 @@
             font-size: 1.1rem;
         }
         .score-val.winner { color: var(--accent); }
+
+        /* Booking Button */
+        .btn-book {
+            margin-top: 10px;
+            width: 100%;
+            padding: 8px;
+            background: var(--accent-light);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .btn-book:hover {
+            background: var(--accent);
+            color: white;
+        }
 
         /* Standings Table */
         .table-container {
@@ -340,15 +412,15 @@
 
     // High-Quality Logos (ESPN & Football-Data.org)
     const LEAGUES = [
-        { name: 'Premier League', id: '4328', logo: 'https://crests.football-data.org/PL.png' },
-        { name: 'NBA', id: '4387', logo: 'https://a.espncdn.com/i/teamlogos/leagues/500/nba.png' },
-        { name: 'NFL', id: '4391', logo: 'https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png' },
-        { name: 'La Liga', id: '4335', logo: 'https://crests.football-data.org/PD.png' },
-        { name: 'Bundesliga', id: '4331', logo: 'https://crests.football-data.org/BL1.png' },
-        { name: 'Serie A', id: '4332', logo: 'https://crests.football-data.org/SA.png' },
-        { name: 'Ligue 1', id: '4334', logo: 'https://crests.football-data.org/FL1.png' },
-        { name: 'MLB', id: '4424', logo: 'https://a.espncdn.com/i/teamlogos/leagues/500/mlb.png' },
-        { name: 'NHL', id: '4380', logo: 'https://a.espncdn.com/i/teamlogos/leagues/500/nhl.png' }
+        { name: 'Premier League', id: '4328', logo: 'https://crests.football-data.org/PL.png', bg: 'https://images.unsplash.com/photo-1600250395178-40fe752e5189?auto=format&fit=crop&q=80&w=2000' },
+        { name: 'NBA', id: '4387', logo: 'https://a.espncdn.com/i/teamlogos/leagues/500/nba.png', bg: 'https://images.unsplash.com/photo-1504450758481-7338eba7524a?auto=format&fit=crop&q=80&w=2000' },
+        { name: 'NFL', id: '4391', logo: 'https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png', bg: 'https://images.unsplash.com/photo-1566577739112-5180d4bf9390?auto=format&fit=crop&q=80&w=2000' },
+        { name: 'La Liga', id: '4335', logo: 'https://crests.football-data.org/PD.png', bg: 'https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&q=80&w=2000' },
+        { name: 'Bundesliga', id: '4331', logo: 'https://crests.football-data.org/BL1.png', bg: 'https://images.unsplash.com/photo-1557335200-a65f7f032602?auto=format&fit=crop&q=80&w=2000' },
+        { name: 'Serie A', id: '4332', logo: 'https://crests.football-data.org/SA.png', bg: 'https://images.unsplash.com/photo-1550091589-70cadf18fb36?auto=format&fit=crop&q=80&w=2000' },
+        { name: 'Ligue 1', id: '4334', logo: 'https://crests.football-data.org/FL1.png', bg: 'https://images.unsplash.com/photo-1552318965-6e6be7484ada?auto=format&fit=crop&q=80&w=2000' },
+        { name: 'MLB', id: '4424', logo: 'https://a.espncdn.com/i/teamlogos/leagues/500/mlb.png', bg: 'https://images.unsplash.com/photo-1508344928928-7137b29de216?auto=format&fit=crop&q=80&w=2000' },
+        { name: 'NHL', id: '4380', logo: 'https://a.espncdn.com/i/teamlogos/leagues/500/nhl.png', bg: 'https://images.unsplash.com/photo-1580748141549-71748dbe0bdc?auto=format&fit=crop&q=80&w=2000' }
     ];
 
     let currentLeague = LEAGUES[0];
@@ -379,7 +451,7 @@
     }
 
     // Caching Wrapper
-    async function fetchWithCache(url, ttlMinutes = 60) {
+    async function fetchWithCache(url, ttlMinutes = 1440) {
         const cacheKey = `sports_cache_${url}`;
         const cached = localStorage.getItem(cacheKey);
         const now = Date.now();
@@ -416,6 +488,13 @@
     }
 
     async function loadLeague(league) {
+        // Update Background Image
+        if (league.bg) {
+            document.body.style.backgroundImage = `url('${league.bg}')`;
+        } else {
+            document.body.style.backgroundImage = 'none';
+        }
+
         // 1. Update Header
         document.getElementById('page-header').innerHTML = `
             <img src="${league.logo}" class="league-logo-large">
@@ -432,12 +511,12 @@
         standingsEl.innerHTML = '<tr><td class="loading">Updating table...</td></tr>';
 
         try {
-            // Use 60 minute cache
-            const [past, next, table] = await Promise.all([
-                fetchWithCache(`${BASE_URL}/eventspastleague.php?id=${league.id}`),
-                fetchWithCache(`${BASE_URL}/eventsnextleague.php?id=${league.id}`),
-                fetchWithCache(`${BASE_URL}/lookuptable.php?l=${league.id}&s=2025-2026`)
-            ]);
+            // Fetch individually so one failure (like standings) doesn't break everything
+            let past = { events: [] }, next = { events: [] }, table = { table: null };
+            
+            try { past = await fetchWithCache(`${BASE_URL}/eventspastleague.php?id=${league.id}`); } catch(e) { console.warn("Past events fetch failed:", e); }
+            try { next = await fetchWithCache(`${BASE_URL}/eventsnextleague.php?id=${league.id}`); } catch(e) { console.warn("Next events fetch failed:", e); }
+            try { table = await fetchWithCache(`${BASE_URL}/lookuptable.php?l=${league.id}&s=2025-2026`); } catch(e) { console.warn("Standings fetch failed:", e); }
             
             // Show update time from cache timestamp (approx)
             document.getElementById('last-updated').innerText = `Data cached (1h TTL)`;
@@ -450,6 +529,12 @@
             } else {
                 scoresEl.innerHTML = events.map(ev => {
                     const isPast = !!ev.intHomeScore;
+                    const bookBtn = !isPast ? `
+                        <button class="btn-book" onclick="triggerBooking('${ev.strEvent}', '${ev.dateEvent}')">
+                            <i class="fas fa-ticket-alt"></i> Book Ticket
+                        </button>
+                    ` : '';
+
                     return `
                     <div class="score-card">
                         <div class="match-status ${!isPast ? 'live' : ''}">
@@ -471,6 +556,7 @@
                                 ${ev.intAwayScore || '-'}
                             </span>
                         </div>
+                        ${bookBtn}
                     </div>
                     `;
                 }).join('');
@@ -507,13 +593,25 @@
             const highlights = (past.events || []).slice(0, 3); // Show Top 3
             
             if (highlights.length > 0) {
-                headlinesEl.innerHTML = highlights.map(h => {
+                let html = '';
+                highlights.forEach((h, index) => {
                     const winner = parseInt(h.intHomeScore) > parseInt(h.intAwayScore) ? h.strHomeTeam : h.strAwayTeam;
                     const newsQuery = `${h.strHomeTeam} vs ${h.strAwayTeam} highlights`;
-                    // Use Event Thumbnail if available, else Fallback to League/Team Logo
-                    const bgImage = h.strThumb || league.logo; 
+                    const bgImage = h.strThumb || league.bg || league.logo; 
                     
-                    return `
+                    if (index === 0) {
+                        html += `
+                        <div class="hero-headline" style="background-image: url('${bgImage}');" onclick="window.open('https://www.google.com/search?q=${encodeURIComponent(newsQuery)}')">
+                            <div class="hero-content">
+                                <h3>${winner} defeats ${winner === h.strHomeTeam ? h.strAwayTeam : h.strHomeTeam}</h3>
+                                <div class="hero-meta">
+                                    <span style="color:var(--accent-light); font-weight:600"><i class="fas fa-play-circle"></i> Game Recap</span> • ${h.intHomeScore}-${h.intAwayScore} • ${h.dateEvent}
+                                </div>
+                            </div>
+                        </div>
+                        `;
+                    } else {
+                        html += `
                         <div class="headline-card" onclick="window.open('https://www.google.com/search?q=${encodeURIComponent(newsQuery)}')">
                             <div style="background-image: url('${bgImage}'); background-size: cover; background-position: center; width:120px; height:80px; border-radius:12px; flex-shrink:0;"></div>
                             <div class="headline-content">
@@ -523,16 +621,36 @@
                                 </div>
                             </div>
                         </div>
-                    `;
-                }).join('');
+                        `;
+                    }
+                });
+                headlinesEl.innerHTML = html;
             } else {
                 headlinesEl.innerHTML = '<div style="padding:10px; color:#888">No recent headlines found.</div>';
             }
 
         } catch (e) {
-            console.error(e);
-            scoresEl.innerHTML = 'Error loading data.';
+            console.error("League Load Error:", e);
+            scoresEl.innerHTML = '<div class="loading">No recent games available right now. Check back later!</div>';
+            standingsEl.innerHTML = '<tr><td style="padding:20px; text-align:center">Standings unavailable.</td></tr>';
+            headlinesEl.innerHTML = '<div style="padding:10px; color:#888">No recent headlines found.</div>';
         }
+    }
+
+    // Agent Trigger
+    function triggerBooking(eventTitle, date) {
+        const command = `openclaw run browser-automator "Book tickets for ${eventTitle} on ${date}"`;
+        
+        // In a real app, this would use the OpenClaw API directly.
+        // For this local dashboard, we'll prompt the user to copy/paste.
+        const msg = `To book tickets, copy and run this command in OpenClaw:\n\n${command}`;
+        
+        // Try to copy to clipboard automatically
+        navigator.clipboard.writeText(command).then(() => {
+            alert("Command copied to clipboard! Paste it into OpenClaw to start booking:\n\n" + command);
+        }).catch(() => {
+            prompt("Copy this command to start booking:", command);
+        });
     }
 
     // Helper to generate a consistent color from string
